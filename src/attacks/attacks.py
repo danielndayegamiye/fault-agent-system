@@ -1,5 +1,5 @@
 """
-attacks.py - Functions for testing fault detection against adversarial attacks
+src/attacks/attacks.py - Functions for testing fault detection against adversarial attacks
 
 Design architecture:
 --------------------
@@ -116,6 +116,55 @@ def drift_over_time(X_test: np.ndarray, col_stds: np.ndarray, severity: float = 
 
         drift_vector = np.minimum(rate * sample_indices, cap)
 
-        X_corrupted[:, column_i] += drift_vector
+        X_corrupted[:, column_i] += drift_vector# Apply the drift to every row in column
 
     return X_corrupted
+
+
+
+#========================== Noise injection ==========================
+def noise_injection(X_test: np.ndarray, col_stds: np.ndarray, severity: float = 0.5, fraction: float = 0.3, target_cols = None, seed: int = 42 ) -> np.ndarray:
+    """
+    Description
+    -----------
+    - Function that adds normally distributed random noise to a random subset of samples
+
+    Two independent severity parameters
+    ----------------------------------
+    - Severity -> std of the noise (spread of corruption)
+    - Fraction -> proportion of samples being corrupted (0.0 to 1.0)
+    
+    Parameters
+    ----------
+    - X_test:       2D np array of shape (n_samples, n_features)
+    - col_stds:     1D np array of columns stds from training data
+    - severity:     std of the Gaussian noise, in units of col_std
+    - fraction:     proportion of sampes being corrupted must be in range [0.0, 1.0]
+    - target_cols:  Which columns are being corrupted where None = all columns
+    - seed:         Random seed used for reproducibility. Same seed gives same results
+
+    Returns
+    -------
+    - A corrupted copy of X_test
+    """
+    X_corrupted = X_test # Make a copy of the test data
+    n_samples = X_test.shape[0]
+    columns = resolve_target_cols(X_test, target_cols)# Obtain indicies of target columns
+
+
+    rng = np.random.default_rng(seed)# Seed the RNG once before all operations
+    # Ensures taht the same fraction of samples and same noise value are selected
+    # every time the function is called with the same seed
+
+    n_corrupted = int(n_samples * fraction) # Choose sample indices that will be corrupted
+    corrupted_indicies = rng.choice(n_samples, size=n_corrupted, replace = False)
+    # chooses n_corrupted sammples without replacement, no sample is corrupted twice
+
+    for column_i in columns:
+        noise_std = severity * col_stds[column_i]
+
+        # Create noise only for the chosen corruped samples
+        noise = rng.normal(loc=0.0, scale=noise_std, size=n_corrupted)
+        X_corrupted[corrupted_indicies, column_i] += noise
+
+    return X_corrupted 
