@@ -168,3 +168,55 @@ def noise_injection(X_test: np.ndarray, col_stds: np.ndarray, severity: float = 
         X_corrupted[corrupted_indicies, column_i] += noise
 
     return X_corrupted 
+
+
+
+#========================== Replay attack ==========================
+def replay_attack(X_test: np.ndarray, col_stds: np.ndarray, severity: float = 0.5, lookback: int = 50, target_cols = None, seed: int = 42) -> np.ndarray:
+    """
+    Description
+    -----------
+    - Function to replace samples with older recorded data from the same test sequence
+
+    How it works
+    ------------
+    1. Randomly select a fraction of sample indices to replace
+    2. For each selected index, repalce with data from index (i - offset)
+    3. If (i-offset) < 0, skip the sample since that implie looking from before the start
+
+
+    Parameters
+    ----------
+    - X_test:       2D numpy array of shape (n_samples, n_features)
+    - col_stds:     1D array of column stds from training data, not used for scaling but for consistent API
+    - severity:     Fraction of samples to replace, value between [0.0, 1.0]
+    - lookback:     Maximum number of sampels to go back to for replay
+    - target_cols:  Which columns to corrupt where None = all columns
+    - seed:         Random seed for reproducibility
+
+    Returns
+    -------
+    - A corrupted copy of X_copy
+    """
+    X_corrupted = X_test.copy()
+    n_samples = X_test.shape[0]
+    cols = resolve_target_cols(X_test, target_cols)
+
+    rng = np.random.default_rng(seed)
+
+    # Calculate how many samples to replace
+    n_replayed = int(n_samples * severity)
+    target_indices = rng.choice(n_samples, size=n_replayed, replace=False)
+
+    for target_index in target_indices:
+        # picks a random offset between 1 and loopback
+        offset = rng.integers(low=1, high=lookback + 1)
+        source_index = target_index - offset  
+
+        if source_index < 0:# if source index would be before start of array
+            continue # Skip
+
+        for column_i in cols: # Replace target rows selected coluns with source row
+            X_corrupted[target_indices, column_i] = X_test[source_index, column_i]
+
+    return X_corrupted
