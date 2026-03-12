@@ -41,7 +41,7 @@ from src.agents.detection_agent import DetectionAgent
 from src.agents.diagnostic_agent import DiagnosticAgent
 from src.data.loader import load_detection_data, load_multiclass_data
 from src.attacks.attacks import (bias_injection, drift_over_time, noise_injection, replay_attack)
-#from src.attacks.evaluator import evaluate_attacks, print_report
+from src.attacks.evaluator import evaluate_attacks, print_report
 
 def parse_args():
     """
@@ -186,4 +186,75 @@ def main():
 
     print("\n[3/4] Applying attacks...")
     
+
+    # Parameters shared by all attacks
+    shared = dict(severity=args.severity, target_cols=args.target_cols)
+
+    # corrupted versions of the detection test set
+    corrupted_det = {
+        "bias_injection": bias_injection(
+            X_test_det, col_stds_det, **shared
+        ),
+        "drift_over_time": drift_over_time(
+            X_test_det, col_stds_det, **shared
+        ),
+        "noise_injection": noise_injection(
+            X_test_det, col_stds_det,
+            fraction=args.fraction, seed=args.seed, **shared
+        ),
+        "replay_attack": replay_attack(
+            X_test_det, col_stds_det,
+            severity=args.fraction,   # fraction of samples replayed
+            lookback=args.lookback,
+            seed=args.seed,
+            target_cols=args.target_cols,
+        ),
+    }
+
+    # corrupted versions of the diagnostic test set
+    corrupted_diag = {
+        "bias_injection": bias_injection(
+            X_test_diag, col_stds_diag, **shared
+        ),
+        "drift_over_time": drift_over_time(
+            X_test_diag, col_stds_diag, **shared
+        ),
+        "noise_injection": noise_injection(
+            X_test_diag, col_stds_diag,
+            fraction=args.fraction, seed=args.seed, **shared
+        ),
+        "replay_attack": replay_attack(
+            X_test_diag, col_stds_diag,
+            severity=args.fraction,
+            lookback=args.lookback,
+            seed=args.seed,
+            target_cols=args.target_cols,
+        ),
+    }
+    print(f"    Applied 4 attacks to detection  test set ({X_test_det.shape[0]} samples)")
+    print(f"    Applied 4 attacks to diagnostic test set ({X_test_diag.shape[0]} samples)")
+
+
+    print("\n[4/4] Evaluating...")
+
+
+    results = evaluate_attacks(
+        detection_agent=det_agent,
+        diagnostic_agent=diag_agent,
+        X_test_clean_det=X_test_det,
+        X_test_clean_diag=X_test_diag,
+        y_detection=y_test_det,
+        y_diagnostic=y_test_diag,
+        corrupted_detection_datasets=corrupted_det,
+        corrupted_diagnostic_datasets=corrupted_diag,
+    )
+ 
+    print_report(results)
+ 
+ 
+if __name__ == "__main__":
+    # This guard ensures main() only runs when the script is called directly:
+    #   python experiments/run_attacks.py   ← runs
+    #   import run_attacks                  ← does NOT run main()
+    main()
 
