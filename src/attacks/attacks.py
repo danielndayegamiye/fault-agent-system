@@ -26,3 +26,35 @@ def resolve_target_cols(X_test: np.ndarray, target_cols) -> list[int]:
         return list(range(X_test.shape[1])) # Returns number of features in dataset as a list
     return list(target_cols)
     # NOTES: .shape returns dimensions as a tuple (rows,columns)
+
+
+
+#========================== Bias injection ==========================
+def bias_injection(X_test: np.ndarray, col_stds: np.ndarray, severity: float = 0.5, target_cols = None) -> np.ndarray:
+    """
+    This attack aims to add a constant negative/malicious offset to selected columns of the testing data
+
+    Offset is calculated by:
+        offset = severity * col_std (where std refers to how much values can vary from the mean)
+
+        severity = 0.5 -> offset is half the standard deviation (more subtle)
+        severity = 2.0 -> Offset is double the standard deviations (obvious)
+    
+    Parameters:
+        X_test:       2D numpy array of shape (n_samples, n_features) representing the split test data
+        col_stds:     1D numpy array containing each columns standard deviation 
+        severity:     Scalar multiplier controlling offset magnitude, unitless as it is expressed in std
+        target_cols:  Which columns to corrupt (None specified = all columns, [0,1,2] = Ia, Ib, Ic)
+
+    Returns:
+        Corrupted copy of X_test, origional is never modified
+    """
+    X_corrupted = X_test.copy() # Making sure to work on a copy of test data
+
+    cols = resolve_target_cols(X_test, target_cols)
+
+    for column_i in cols: # For each feature we want to corrupt
+        offset = severity * col_stds[column_i] # create a fixed offset to be added to value in this column
+        X_corrupted[:, column_i] += offset # For all rows (:) of column column_i add offset to each value
+
+    return X_corrupted
