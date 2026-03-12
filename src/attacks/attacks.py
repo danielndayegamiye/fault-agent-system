@@ -99,3 +99,23 @@ def drift_over_time(X_test: np.ndarray, col_stds: np.ndarray, severity: float = 
     -------
     - A corrupted copy of X_test with time varying offsets applied
     """
+    X_corrupted = X_test.copy()
+    num_samples = X_test.shape[0]
+    columns = resolve_target_cols(X_test, target_cols)
+
+    # Drift vector with one value per sample, shape is (n_samples, )
+    sample_indices = np.arrange(num_samples) # [0, 1, 2, ..., n_samples-1]
+
+    # For each column:
+        # Compute that columns drift
+        # Apply it to every row in that column
+
+    for column_i in columns:
+        cap = severity * col_stds[column_i]
+        rate = cap / num_samples # Cap will be reached at the final samples
+
+        drift_vector = np.minimum(rate * sample_indices, cap)
+
+        X_corrupted[:, column_i] += drift_vector
+
+    return X_corrupted
