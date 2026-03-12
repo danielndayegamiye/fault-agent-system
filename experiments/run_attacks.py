@@ -41,11 +41,7 @@ from src.agents.detection_agent import DetectionAgent
 from src.agents.diagnostic_agent import DiagnosticAgent
 from src.data.loader import load_detection_data, load_multiclass_data
 from src.attacks.attacks import (bias_injection, drift_over_time, noise_injection, replay_attack)
-
-#=================================================
-# This will be an import for the evaluator and results
-# DO NOT FORGET TO MAKE THIS AND ADD THIS
-#=====================================================
+#from src.attacks.evaluator import evaluate_attacks, print_report
 
 def parse_args():
     """
@@ -138,3 +134,56 @@ def parse_args():
 #======================== Main ========================
 def main():
     args = parse_args()
+
+    # Print all configurations so that every output is self documenting
+    # when you run sweeps and redirect output to a file, it is recorded which 
+    # parameters produced which results
+    print("\n" + "=" * 65)
+    print("  Attack Evaluation Configuration")
+    print("=" * 65)
+    print(f"  Severity:    {args.severity}    (all attacks)")
+    print(f"  Fraction:    {args.fraction}    (noise + replay - samples corrupted)")
+    print(f"  Lookback:    {args.lookback}    (replay - max steps back)")
+    print(f"  Seed:        {args.seed}        (nosie + replay - reproducibility)")
+    print(f"  Target cols: {args.target_cols}")
+    print(f"  Models dir:  {args.models_dir}")
+
+
+    print("\n[1/4] Loading data...")
+
+
+    det_data = load_detection_data(args.detection, test_size=0.2, random_state=42)
+    diag_data = load_multiclass_data(args.diagnostic, test_size=0.2, random_state=42)
+
+    X_train_det = det_data["X_train"]
+    X_test_det = det_data["X_test"]
+    y_test_det = det_data["y_test"]
+
+    X_train_diag = diag_data["X_train"]
+    X_test_diag = diag_data["X_test"]
+    y_test_diag = diag_data["y_test"]
+
+    # Compute per column standard deviation from training data only
+    # These are for  scaling references for all attack functions
+    # Using training std means attack doesnt not know test distribution
+    col_stds_det = X_train_det.std(axis=0)
+    col_stds_diag = X_train_diag.std(axis=0)
+    
+    print(f"    Detection - train: {X_train_det.shape}   test: {X_test_det.shape} ")
+    print(f"    Detection - train: {X_train_diag.shape}   test: {X_test_diag.shape} ")
+
+
+    print("\n[2/4] Loading agents...")
+
+
+    models_dir = Path(args.models_dir)
+    det_agent = DetectionAgent.load(models_dir / "detection_agent.pkl")
+    diag_agent = DiagnosticAgent.load(models_dir / "diagnostic_agent.pkl")
+
+    print("    detection_agent.pkl is loaded")
+    print("    diagnostic_agent.pkl is loaded")
+
+
+    print("\n[3/4] Applying attacks...")
+    
+
