@@ -16,10 +16,10 @@ It uses XGBoost models to process electrical features and classify system states
 First, ensure you have the required dependencies installed: 
 `pip install numpy pandas scikit-learn xgboost`
 
-Run the pipeline from the terminal by pointing it to your data files and specifying where to save the outputs. 
+Run the pipeline from the **project root** folder by pointing to your data files and specifying where to save the outputs. 
 
 ```bash
-python run_pipeline.py \
+python experiments/run_pipeline.py \
     --detection data/detect_dataset.csv \
     --diagnostic data/classData.csv \
     --save-dir models/ \
@@ -54,4 +54,19 @@ fault_type = diag_agent.predict_labels(new_data)
 
 print(f"Fault detected: {is_fault[0]}")
 print(f"Fault type: {fault_type[0]}")
+
+```
+
+## Evaluating Adversarial Robustness
+
+After training, you can test how the models handle corrupted data using the attack evaluation script. This applies noise injection, replay attacks, drift over time, and bias injection to the test sets.
+
+Run the evaluation script from the **project root** folder:
+
+```bash
+python experiments/run_attacks.py \
+    --detection data/detect_dataset.csv \
+    --diagnostic data/classData.csv
+
+```
 
