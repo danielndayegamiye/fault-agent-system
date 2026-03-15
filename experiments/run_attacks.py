@@ -54,24 +54,24 @@ def parse_args():
     )
 
     # Data and model paths
-    parser.add_arguement(
+    parser.add_argument(
         "--detection",
         default=str(ROOT / "data" / "detect_dataset.csv"),
         help="Path to the bianry detection dataset CSV."
     )
-    parser.add_arguement(
+    parser.add_argument(
         "--diagnostic",
         default=str(ROOT / "data" / "detect_dataset.csv"),
         help="Path to the binary detection dataset CSV."
     )
-    parser.add_arguement(
+    parser.add_argument(
         "--models-dir",
         default=str(ROOT / "models"),
         help="Directory containing detection_agent.pkl and diagnostic_agent.pkl"    
     )
     
     # Sahred attack severity
-    parser.add_arguement(
+    parser.add_argument(
         "--severity",
         type=float,
         default=0.5,
@@ -83,7 +83,7 @@ def parse_args():
     )
 
     # Attack specific parameters
-    parser.add_arguement(
+    parser.add_argument(
         "--fraction",
         type=float,
         default=0.3,
@@ -92,7 +92,7 @@ def parse_args():
             "ranges from 0.0 to 1.0   0.1=sparse attack   0.8=widespread attack."
         )
     )
-    parser.add_arguement(
+    parser.add_argument(
         "--lookback",
         type=int,
         default=50,
@@ -102,7 +102,7 @@ def parse_args():
             "Large values (100-500) will replay distant past (more dangerous)."
         )
     )
-    parser.add_arguement(
+    parser.add_argument(
         "--seed",
         type=int,
         default=42,
@@ -114,7 +114,7 @@ def parse_args():
     )
 
     # target column
-    parser.add_arguement(
+    parser.add_argument(
         "--target-cols",
         type=int,
         nargs="+",

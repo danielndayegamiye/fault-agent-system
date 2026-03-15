@@ -21,7 +21,7 @@ class AgentResult:
     """
     accuracy: float # Proportion of correct predictions between 0.0 and 1.0
 
-    n_correction: int # Raw count of correct predictions
+    n_correct: int # Raw count of correct predictions
     n_samples: int # total samples evaluated
     predictions: np.ndarray # raw prediction array, kept for analysis
     y_true: np.ndarray # the true labels used to compute recall
@@ -37,7 +37,7 @@ class AgentResult:
         actual_faults = (self.y_true == 1)
 
         # Among actual faults, how many did the model predict as fault
-        true_positives = int(np.sup(self.predictions[actual_faults] == 1))
+        true_positives = int(np.sum(self.predictions[actual_faults] == 1))
         false_negatives = int(np.sum(self.predictions[actual_faults] == 0))
 
         total_faults = true_positives + false_negatives

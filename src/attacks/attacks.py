@@ -104,7 +104,7 @@ def drift_over_time(X_test: np.ndarray, col_stds: np.ndarray, severity: float = 
     columns = resolve_target_cols(X_test, target_cols)
 
     # Drift vector with one value per sample, shape is (n_samples, )
-    sample_indices = np.arrange(num_samples) # [0, 1, 2, ..., n_samples-1]
+    sample_indices = np.arange(num_samples) # [0, 1, 2, ..., n_samples-1]
 
     # For each column:
         # Compute that columns drift
