@@ -1,0 +1,14 @@
+{
+  "feature_names": [
+    "Ia",
+    "Ib",
+    "Ic",
+    "Va",
+    "Vb",
+    "Vc"
+  ],
+  "config": {
+    "n_estimators": 300,
+    "learning_rate": 0.05
+  }
+}

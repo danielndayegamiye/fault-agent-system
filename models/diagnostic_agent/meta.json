@@ -1,0 +1,28 @@
+{
+  "fault_bits": [
+    "G",
+    "C",
+    "B",
+    "A"
+  ],
+  "feature_names": [
+    "Ia",
+    "Ib",
+    "Ic",
+    "Va",
+    "Vb",
+    "Vc"
+  ],
+  "config": {
+    "n_estimators": 300,
+    "learning_rate": 0.05
+  },
+  "label_encoder_classes": [
+    "0000",
+    "0110",
+    "0111",
+    "1001",
+    "1011",
+    "1111"
+  ]
+}
