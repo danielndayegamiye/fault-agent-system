@@ -40,8 +40,8 @@ from src.agents.detection_agent import DetectionAgent
 from src.agents.diagnostic_agent import DiagnosticAgent
 
 # Load the saved models from disk
-det_agent = DetectionAgent.load("models/detection_agent.pkl")
-diag_agent = DiagnosticAgent.load("models/diagnostic_agent.pkl")
+det_agent  = DetectionAgent.load("models/detection_agent")
+diag_agent = DiagnosticAgent.load("models/diagnostic_agent")
 
 # Prepare new data as a 2D numpy array (Ia, Ib, Ic, Va, Vb, Vc)
 new_data = np.array([[10.5, -5.2, -4.8, 220.1, -110.0, -109.5]])

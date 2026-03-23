@@ -9,20 +9,6 @@ from src.agents.diagnostic_agent import DiagnosticAgent
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
 
-def save_importances(agent, task_name, save_dir):
-    importances = agent.feature_importance()
-    filepath = save_dir / f"{task_name}_feature_importances.txt"
-    
-    with open(filepath, "w") as f:
-        f.write(f"Feature Importances for {task_name.capitalize()} Agent\n")
-        f.write("=" * 40 + "\n")
-        
-        sorted_imp = sorted(importances.items(), key=lambda x: x[1], reverse=True)
-        for feat, score in sorted_imp:
-            f.write(f"{feat:10s} : {score:.6f}\n")
-            
-    logger.info("Saved %s feature importances to %s", task_name, filepath)
-
 def main():
     parser = argparse.ArgumentParser(description="Train detection and diagnostic fault agents.")
     
@@ -53,8 +39,7 @@ def main():
             feature_names=det_data["feature_names"]
         )
         det_agent.evaluate(det_data["X_test"], det_data["y_test"])
-        det_agent.save(save_dir / "detection_agent.pkl")
-        save_importances(det_agent, "detection", save_dir)
+        det_agent.save(save_dir / "detection_agent")
         
     if args.diagnostic:
         logger.info("Running Diagnostic Pipeline...")
@@ -69,8 +54,8 @@ def main():
             class_names=diag_data.get("class_names")
         )
         diag_agent.evaluate(diag_data["X_test"], diag_data["y_test"])
-        diag_agent.save(save_dir / "diagnostic_agent.pkl")
-        save_importances(diag_agent, "diagnostic", save_dir)
+        diag_agent.save(save_dir / "diagnostic_agent")
+        
 
 if __name__ == "__main__":
     main()

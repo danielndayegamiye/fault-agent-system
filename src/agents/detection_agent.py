@@ -9,17 +9,11 @@ Independent and fully importable.
 from __future__ import annotations
 
 import logging
-import pickle
 from pathlib import Path
 from typing import Optional
 
 import numpy as np
-from sklearn.metrics import (
-    accuracy_score,
-    classification_report,
-    confusion_matrix,
-    roc_auc_score,
-)
+from sklearn.metrics import accuracy_score
 from xgboost import XGBClassifier
 
 logger = logging.getLogger(__name__)
@@ -151,52 +145,109 @@ class DetectionAgent:
 
         Returns
         -------
-        dict with accuracy, roc_auc, confusion_matrix, classification_report
+        dict with accuracy and f1_score (binary, fault class only)
         """
         self._check_trained()
+        from sklearn.metrics import f1_score
+
         y_pred = self.predict(X)
-        y_prob = self.predict_proba(X)[:, 1]
 
         metrics = {
             "accuracy": accuracy_score(y, y_pred),
-            "roc_auc": roc_auc_score(y, y_prob),
-            "confusion_matrix": confusion_matrix(y, y_pred).tolist(),
-            "classification_report": classification_report(
-                y, y_pred, target_names=["Normal (0)", "Fault (1)"]
-            ),
+            "f1_score": f1_score(y, y_pred, average="binary", pos_label=1),
         }
 
         logger.info(
-            "[DetectionAgent] Accuracy=%.4f  ROC-AUC=%.4f",
+            "[DetectionAgent] Accuracy=%.4f  F1=%.4f",
             metrics["accuracy"],
-            metrics["roc_auc"],
+            metrics["f1_score"],
         )
         return metrics
-
-    def feature_importance(self) -> dict:
-        """Return feature importances as {feature_name: score}."""
-        self._check_trained()
-        scores = self.model.feature_importances_
-        return dict(zip(self.feature_names, scores.tolist()))
 
     # ------------------------------------------------------------------
     # Persistence
     # ------------------------------------------------------------------
 
     def save(self, path: str | Path) -> None:
-        """Pickle the agent (model + metadata) to disk."""
-        path = Path(path)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        with open(path, "wb") as f:
-            pickle.dump(self, f)
-        logger.info("[DetectionAgent] Saved to '%s'.", path)
+        """
+        Save the agent to a directory using XGBoost native JSON format.
+
+        Layout produced under ``path/``::
+
+            <path>/
+            ├── meta.json    # feature_names, config
+            └── model.json   # XGBoost native JSON
+
+        Parameters
+        ----------
+        path : str or Path
+            Directory to create (or overwrite).  Created if it does not exist;
+            existing files are overwritten silently.
+        """
+        import json
+
+        save_dir = Path(path)
+        save_dir.mkdir(parents=True, exist_ok=True)
+
+        # XGBoost native JSON — portable across versions, no pickle fragility
+        model_path = save_dir / "model.json"
+        self.model.save_model(str(model_path))
+        logger.info("[DetectionAgent] Model saved to '%s'.", model_path)
+
+        # Metadata sidecar — everything needed to reconstruct the agent shell
+        meta = {
+            "feature_names": self.feature_names,
+            "config": self.config,
+        }
+        meta_path = save_dir / "meta.json"
+        with open(meta_path, "w", encoding="utf-8") as f:
+            json.dump(meta, f, indent=2)
+
+        logger.info("[DetectionAgent] Metadata saved to '%s'.", meta_path)
+        logger.info("[DetectionAgent] Agent saved to directory '%s'.", save_dir)
 
     @classmethod
     def load(cls, path: str | Path) -> "DetectionAgent":
-        """Load a previously saved DetectionAgent."""
-        with open(path, "rb") as f:
-            agent = pickle.load(f)
-        logger.info("[DetectionAgent] Loaded from '%s'.", path)
+        """
+        Load a DetectionAgent saved with :meth:`save`.
+
+        Parameters
+        ----------
+        path : str or Path
+            The directory previously passed to :meth:`save`.
+
+        Returns
+        -------
+        DetectionAgent (trained, ready for inference)
+        """
+        import json
+
+        save_dir = Path(path)
+        if not save_dir.is_dir():
+            raise FileNotFoundError(
+                f"Expected a directory at '{save_dir}', but it does not exist. "
+                "Pass the directory path used in save(), not a file path."
+            )
+
+        # Restore agent shell from metadata
+        meta_path = save_dir / "meta.json"
+        with open(meta_path, "r", encoding="utf-8") as f:
+            meta = json.load(f)
+
+        agent = cls(config=meta.get("config", {}))
+        agent.feature_names = meta["feature_names"]
+
+        # Restore XGBoost model from native JSON
+        model_path = save_dir / "model.json"
+        if not model_path.exists():
+            raise FileNotFoundError(
+                f"Model file missing: '{model_path}'. "
+                "The save directory may be incomplete or corrupted."
+            )
+        agent.model.load_model(str(model_path))
+
+        agent.is_trained = True
+        logger.info("[DetectionAgent] Agent loaded from directory '%s'.", save_dir)
         return agent
 
     # ------------------------------------------------------------------
