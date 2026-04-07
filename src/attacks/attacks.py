@@ -12,6 +12,7 @@ Each function shares the same signature pattern:
     attack(X_test, col_stds, severity, target_cols, ...) -> np.ndarray
 """
 import numpy as np
+import pandas as pd
 
 
 #========================== Shared helper function ==========================#
@@ -147,7 +148,7 @@ def noise_injection(X_test: np.ndarray, col_stds: np.ndarray, severity: float = 
     -------
     - A corrupted copy of X_test
     """
-    X_corrupted = X_test # Make a copy of the test data
+    X_corrupted = X_test.copy() # Make a copy of the test data
     n_samples = X_test.shape[0]
     columns = resolve_target_cols(X_test, target_cols)# Obtain indicies of target columns
 
@@ -217,6 +218,6 @@ def replay_attack(X_test: np.ndarray, col_stds: np.ndarray, severity: float = 0.
             continue # Skip
 
         for column_i in cols: # Replace target rows selected coluns with source row
-            X_corrupted[target_indices, column_i] = X_test[source_index, column_i]
+            X_corrupted[target_index, column_i] = X_test[source_index, column_i]
 
     return X_corrupted
