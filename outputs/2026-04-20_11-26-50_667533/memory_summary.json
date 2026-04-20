@@ -1,0 +1,24 @@
+{
+  "recent_confidence_stable": true,
+  "recent_fault_pattern": [
+    "0111",
+    "0111",
+    "0111",
+    "0111",
+    "0111"
+  ],
+  "recent_fault_pattern_stable": true,
+  "recent_decision_pattern": [
+    "ACCEPT",
+    "ACCEPT",
+    "ACCEPT",
+    "ACCEPT",
+    "ACCEPT"
+  ],
+  "recent_decision_stable": true,
+  "recent_escalations": 0,
+  "recent_rejects": 0,
+  "recent_accepts": 5,
+  "recent_residual_mean": 0.000975,
+  "recent_disagreement_mean": 0.000325
+}

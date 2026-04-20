@@ -1,0 +1,50 @@
+{
+  "decision": "ACCEPT",
+  "trust_score": 0.695294,
+  "structured_justification": {
+    "fault_detected": true,
+    "detection_confidence": "high",
+    "fault_code": "0111",
+    "active_labels": [
+      "C",
+      "B",
+      "A"
+    ],
+    "inactive_labels": [
+      "G"
+    ],
+    "unlikely_labels": [
+      "G"
+    ],
+    "detection_margin": 0.987244,
+    "max_diagnostic_probability": 0.997488,
+    "strong_active_count": 3,
+    "residual_value": 0.000941,
+    "residual_severity": "low",
+    "disagreement_score": 0.000314,
+    "disagreement_severity": "low",
+    "contradiction_flag": false,
+    "consistency_level": "high",
+    "recent_confidence_stable": true,
+    "recent_fault_pattern": [
+      "0111",
+      "0111",
+      "0111",
+      "0111",
+      "0111"
+    ],
+    "recent_escalations": 0,
+    "decision_rationale": [
+      "trust_score=0.695",
+      "detection_confidence=high",
+      "residual_severity=low",
+      "disagreement_severity=low",
+      "confidence and consistency are sufficient for acceptance"
+    ]
+  },
+  "metadata": {
+    "fallback_used": true,
+    "fallback_reason": "HTTPConnectionPool(host='localhost', port=11434): Max retries exceeded with url: /api/generate (Caused by NewConnectionError(\"HTTPConnection(host='localhost', port=11434): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it\"))",
+    "source": "rule_based_fallback"
+  }
+}

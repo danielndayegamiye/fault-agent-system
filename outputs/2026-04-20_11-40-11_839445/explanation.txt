@@ -1,0 +1,13 @@
+Explanation:
+The fault has been detected with high detection confidence and code 0111.
+
+Key Evidence:
+- The predicted bits for G, C, B, and A are 0, 1, 1, and 1 respectively.
+- Features Ia, Ib, and Ic support the prediction.
+
+Diagnostic Summary:
+- Fault detected: yes
+- Detection confidence: high
+- Fault code: 0111
+- Active labels: C, B, A
+- Unlikely labels: G

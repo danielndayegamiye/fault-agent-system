@@ -1,0 +1,18 @@
+{
+  "decision": "ACCEPT",
+  "trust_score": 1.0,
+  "structured_justification": {
+    "summary": "High confidence and stable recent pattern support acceptance.",
+    "key_factors": [
+      "high confidence",
+      "stable recent fault pattern"
+    ],
+    "risk_flags": [],
+    "recommended_action": "Accept the model prediction."
+  },
+  "metadata": {
+    "fallback_used": false,
+    "source": "llm",
+    "model_name": "llama3:8b"
+  }
+}

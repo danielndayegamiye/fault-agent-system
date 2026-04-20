@@ -1,0 +1,60 @@
+{
+  "detection": {
+    "fault_detected": true,
+    "p_fault": 0.9989137649536133,
+    "p_normal": 0.0010862350463867188,
+    "confidence": "high"
+  },
+  "diagnostic": {
+    "fault_code": "0111",
+    "active_labels": [
+      "C",
+      "B",
+      "A"
+    ],
+    "inactive_labels": [
+      "G"
+    ],
+    "unlikely_labels": [
+      "G"
+    ],
+    "probabilities": {
+      "G": 0.13860198855400085,
+      "C": 0.892040491104126,
+      "B": 0.9994887113571167,
+      "A": 0.9982767105102539
+    }
+  },
+  "residual": {
+    "value": 0.035645127296447754,
+    "severity": "low"
+  },
+  "disagreement": {
+    "score": 0.011881709098815918,
+    "severity": "low"
+  },
+  "memory_summary": {
+    "recent_confidence_stable": true,
+    "recent_fault_pattern": [
+      "0111",
+      "0111",
+      "0111",
+      "0111",
+      "0111"
+    ],
+    "recent_fault_pattern_stable": true,
+    "recent_decision_pattern": [
+      "ACCEPT",
+      "ACCEPT",
+      "ACCEPT",
+      "ACCEPT",
+      "ACCEPT"
+    ],
+    "recent_decision_stable": true,
+    "recent_escalations": 0,
+    "recent_rejects": 0,
+    "recent_accepts": 5,
+    "recent_residual_mean": 0.000975,
+    "recent_disagreement_mean": 0.000325
+  }
+}

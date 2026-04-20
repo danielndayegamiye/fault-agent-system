@@ -1,0 +1,158 @@
+{
+  "fault_detected": true,
+  "detection_confidence": "high",
+  "fault_code": "0111",
+  "bit_order": [
+    "G",
+    "C",
+    "B",
+    "A"
+  ],
+  "predicted_bits": {
+    "G": 0,
+    "C": 1,
+    "B": 1,
+    "A": 1
+  },
+  "active_labels": [
+    "C",
+    "B",
+    "A"
+  ],
+  "inactive_labels": [
+    "G"
+  ],
+  "unlikely_labels": [
+    "G"
+  ],
+  "detection_probability": {
+    "p_fault": 0.9989137649536133,
+    "p_normal": 0.0010862350463867188
+  },
+  "detection_top_supporting_features": [
+    {
+      "feature": "Ia",
+      "shap_value": 5.658636569976807
+    },
+    {
+      "feature": "Ib",
+      "shap_value": 2.3723390102386475
+    },
+    {
+      "feature": "Ic",
+      "shap_value": 1.2306264638900757
+    }
+  ],
+  "detection_top_opposing_features": [
+    {
+      "feature": "Vc",
+      "shap_value": -1.7644997835159302
+    },
+    {
+      "feature": "Vb",
+      "shap_value": -0.8848018646240234
+    }
+  ],
+  "diagnostic_probabilities": {
+    "G": 0.13860198855400085,
+    "C": 0.892040491104126,
+    "B": 0.9994887113571167,
+    "A": 0.9982767105102539
+  },
+  "diagnostic_top_supporting_features": {
+    "G": [
+      {
+        "feature": "Vb",
+        "shap_value": 1.234451174736023
+      },
+      {
+        "feature": "Ia",
+        "shap_value": 0.620996356010437
+      },
+      {
+        "feature": "Ic",
+        "shap_value": 0.3956638276576996
+      }
+    ],
+    "C": [
+      {
+        "feature": "Ic",
+        "shap_value": 2.107046365737915
+      },
+      {
+        "feature": "Ia",
+        "shap_value": 1.4835729598999023
+      },
+      {
+        "feature": "Vc",
+        "shap_value": 0.6551421284675598
+      }
+    ],
+    "B": [
+      {
+        "feature": "Ib",
+        "shap_value": 4.379950523376465
+      },
+      {
+        "feature": "Ic",
+        "shap_value": 2.090315341949463
+      },
+      {
+        "feature": "Ia",
+        "shap_value": 1.1538829803466797
+      }
+    ],
+    "A": [
+      {
+        "feature": "Ia",
+        "shap_value": 6.7473015785217285
+      },
+      {
+        "feature": "Ic",
+        "shap_value": 0.6943019032478333
+      },
+      {
+        "feature": "Vb",
+        "shap_value": 0.2660495638847351
+      }
+    ]
+  },
+  "diagnostic_top_opposing_features": {
+    "G": [
+      {
+        "feature": "Vc",
+        "shap_value": -4.170063495635986
+      }
+    ],
+    "C": [
+      {
+        "feature": "Vb",
+        "shap_value": -1.4506938457489014
+      },
+      {
+        "feature": "Ib",
+        "shap_value": -0.43367961049079895
+      }
+    ],
+    "B": [
+      {
+        "feature": "Vc",
+        "shap_value": -0.9834697246551514
+      }
+    ],
+    "A": [
+      {
+        "feature": "Vc",
+        "shap_value": -1.4198917150497437
+      },
+      {
+        "feature": "Ib",
+        "shap_value": -0.1383606344461441
+      },
+      {
+        "feature": "Va",
+        "shap_value": -0.11659601330757141
+      }
+    ]
+  }
+}

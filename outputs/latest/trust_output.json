@@ -1,0 +1,19 @@
+{
+  "decision": "ACCEPT",
+  "trust_score": 0.9,
+  "structured_justification": {
+    "summary": "High confidence and low residual/disagreement indicate a likely fault.",
+    "key_factors": [
+      "high confidence",
+      "low residual",
+      "low disagreement"
+    ],
+    "risk_flags": [],
+    "recommended_action": "Take corrective action based on the detected fault."
+  },
+  "metadata": {
+    "fallback_used": false,
+    "source": "llm",
+    "model_name": "llama3:8b"
+  }
+}
